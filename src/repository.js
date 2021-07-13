@@ -54,7 +54,7 @@ class Repository {
     const mac = device.mac;
     const deviceIndex = this.findOrCreateDeviceIndex(mac);
     this.devices[deviceIndex] = device;
-    this.saveData();
+    // this.saveData();
     return this;
   }
 

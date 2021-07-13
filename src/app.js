@@ -32,23 +32,26 @@ storage
     await repository.loadData();
     await apiService.uploadProbes(repository.getData());
     repository.clearData();
-    setInterval(() => {
-      repository.registerProbe("test", {
-        value: 28.5,
-        type: "TEMPERATURE",
-        captured_at: new Date(),
-      });
-    }, 100);
   });
-
+cron.schedule("* * * * *", async () => {
+  try {
+    repository.saveData();
+  } catch (e) {}
+});
 cron.schedule("* * * * *", async () => {
   try {
     await apiService.uploadProbes(repository.getData());
     repository.clearData();
-  } catch (e) {
-    console.log(e.geMessage());
-  }
+  } catch (e) {}
 });
+
+setInterval(() => {
+  repository.registerProbe("test", {
+    value: 28.5,
+    type: "TEMPERATURE",
+    captured_at: new Date(),
+  });
+}, 1);
 app.get("/", function (req, res) {
   res.sendFile(__dirname + "/index.html");
 });
