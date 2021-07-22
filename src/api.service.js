@@ -23,13 +23,15 @@ class ApiService {
       };
       // console.log(config);
       const response = await axios.post(
-        `${this.apiBase}/stations/upload`,
+        `${this.apiBase}/s/data/upload`,
         body,
         config
       );
       console.log("response : " + response.status);
+      // console.log(response.data);
       return response.body;
     } catch (e) {
+      console.log(e.response.request._redirectable._redirectCount);
       console.log(e.response.data);
       console.log(e.message);
     }
