@@ -29,25 +29,14 @@ cron.schedule("* * * * *", async () => {
     repository.saveData();
   } catch (e) {}
 });
-cron.schedule("* * * * *", async () => {
+cron.schedule("*/10 * * * * *", async () => {
   try {
     await apiService.uploadProbes(repository.getData());
     repository.clearData();
   } catch (e) {}
 });
 
-// setInterval(() => {
-//   repository.registerProbe("test", {
-//     value: 33,
-//     type: "TEMPERATURE",
-//     captured_at: new Date(),
-//   });
-//   repository.registerProbe("test", {
-//     value: 50,
-//     type: "HUMIDITY",
-//     captured_at: new Date(),
-//   });
-// }, 2000);
+
 app.get("/", function (req, res) {
   res.sendFile(__dirname + "/index.html");
 });
@@ -58,7 +47,6 @@ io.on("connection", function (socket) {
     io.emit("exec", { command });
   });
   socket.on("log", function (data) {
-    // console.log(data);
     for (let sensor of data.sensors){
         repository.registerProbe(data.mac, {
           value: sensor.value,
@@ -66,7 +54,6 @@ io.on("connection", function (socket) {
           captured_at: new Date(),
         });
     }
-
     io.emit("log", data);
   });
 });

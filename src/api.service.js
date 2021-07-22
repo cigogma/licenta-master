@@ -34,6 +34,7 @@ class ApiService {
       console.log(e.response.request._redirectable._redirectCount);
       console.log(e.response.data);
       console.log(e.message);
+      throw e;
     }
   }
 }
