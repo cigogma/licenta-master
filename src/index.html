@@ -75,12 +75,15 @@
         }
         let fomatedMac = data.mac.replace(/:/g, "");
         let device = devices.find(`#${fomatedMac}`);
-        let text = `${data.mac} - ${data.uptime} - ${parseFloat(data.temperature).toFixed(2)}C - ${parseFloat(data.humidity).toFixed(2)}%`;
+        let dataText = data.sensors.map((sensor)=>{
+          return `${sensor.sensor} - ${sensor.value} <br/>`;
+        });
+        let text = `${data.mac} <br/> ${dataText}`;
         if (!device.length) {
           devices.append(`<li id="${fomatedMac}">${text}</li>`);
           return;
         }
-        device.text(text);
+        device.html(text);
         //
       })
     });

@@ -36,18 +36,18 @@ cron.schedule("* * * * *", async () => {
   } catch (e) {}
 });
 
-setInterval(() => {
-  repository.registerProbe("test", {
-    value: 33,
-    type: "TEMPERATURE",
-    captured_at: new Date(),
-  });
-  repository.registerProbe("test", {
-    value: 50,
-    type: "HUMIDITY",
-    captured_at: new Date(),
-  });
-}, 2000);
+// setInterval(() => {
+//   repository.registerProbe("test", {
+//     value: 33,
+//     type: "TEMPERATURE",
+//     captured_at: new Date(),
+//   });
+//   repository.registerProbe("test", {
+//     value: 50,
+//     type: "HUMIDITY",
+//     captured_at: new Date(),
+//   });
+// }, 2000);
 app.get("/", function (req, res) {
   res.sendFile(__dirname + "/index.html");
 });
@@ -58,7 +58,15 @@ io.on("connection", function (socket) {
     io.emit("exec", { command });
   });
   socket.on("log", function (data) {
-    console.log(data);
+    // console.log(data);
+    for (let sensor of data.sensors){
+        repository.registerProbe(data.mac, {
+          value: sensor.value,
+          type: sensor.sensor,
+          captured_at: new Date(),
+        });
+    }
+
     io.emit("log", data);
   });
 });
@@ -66,7 +74,6 @@ io.on("connection", function (socket) {
 io.on("disconnect", function (data) {
   console.log("device disconnected");
 });
-
-http.listen(process.env.APP_PORT || 3000, function () {
-  console.log("listening on *:3000");
+const port =process.env.APP_PORT || 3000;
+http.listen(port, function () {
 });
